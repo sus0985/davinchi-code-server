@@ -1,9 +1,9 @@
-package com.perfectdk.davinchi;
+package com.perfectdk.davinci;
 
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class DavinchiApplicationTests {
+class DavinciApplicationTests {
 
 
 	void contextLoads() {
