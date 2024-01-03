@@ -1,5 +1,6 @@
 package com.perfectdk.davinci.socket;
 
+import com.perfectdk.davinci.repository.DavinciGameRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -9,28 +10,21 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
-@Component
 @RequiredArgsConstructor
+@Component
 public class DavinciSocketHandler extends TextWebSocketHandler {
 
-    public final Map<String, WebSocketSession> sessions = new HashMap<>();
-
-    private static final DavinciSocketHandler handler = new DavinciSocketHandler();
-
-    public static DavinciSocketHandler getHandler() {
-        return handler;
-    }
+    private final DavinciGameRepository gameRepository;
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         super.afterConnectionEstablished(session);
-
         log.info("Socket connected with id: [{}]", session.getId());
-        sessions.put(session.getId(), session);
         sendMessage("Connection established with id: [" + session.getId() + "]", session);
     }
 
@@ -46,9 +40,7 @@ public class DavinciSocketHandler extends TextWebSocketHandler {
         super.afterConnectionClosed(session, status);
 
         log.info("Socket closed with id: [{}]", session.getId());
-        sessions.remove(session.getId());
     }
-
 
     private void sendMessage(String message, WebSocketSession session) throws IOException {
         session.sendMessage(new TextMessage(message));

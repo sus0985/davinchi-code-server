@@ -1,12 +1,12 @@
 package com.perfectdk.davinci.socket;
 
+import com.perfectdk.davinci.repository.DavinciGameRepository;
+import com.perfectdk.davinci.repository.DavinciGameRepositoryImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
-import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 
 @Configuration
 @EnableWebSocket
@@ -16,17 +16,18 @@ public class WebSocketConfiguration implements WebSocketConfigurer {
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(getWebSocketHandler(), SOCKET_ENDPOINT)
+        registry.addHandler(getDavinciSocketHandler(), SOCKET_ENDPOINT)
                 .setAllowedOrigins("*");
     }
 
     @Bean
-    public WebSocketHandler getWebSocketHandler() {
-        return DavinciSocketHandler.getHandler();
+    public DavinciGameRepository getDavinciGameRepository() {
+        return new DavinciGameRepositoryImpl();
     }
 
     @Bean
-    public ServerEndpointExporter serverEndpointExporter() {
-        return new ServerEndpointExporter();
+    public DavinciSocketHandler getDavinciSocketHandler() {
+        return new DavinciSocketHandler(getDavinciGameRepository());
     }
+
 }
